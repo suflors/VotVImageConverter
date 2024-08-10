@@ -1,8 +1,8 @@
 namespace VotVImageConverter
 {
-	public partial class Form1 : Form
+	public partial class ConverterForm : Form
 	{
-		public Form1()
+		public ConverterForm()
 		{
 			InitializeComponent();
 		}
