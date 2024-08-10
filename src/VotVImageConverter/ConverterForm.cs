@@ -10,19 +10,16 @@ namespace VotVImageConverter
 			InitializeComponent();
 		}
 
-		private void btnSelectDir_Click(object sender, EventArgs e)
+		private void BtnSelectDir_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new FolderBrowserDialog())
+			using var dialog = new FolderBrowserDialog();
+			if (dialog.ShowDialog() == DialogResult.OK)
 			{
-				if (dialog.ShowDialog() == DialogResult.OK)
-				{
-					txtSelectedDir.ForeColor = Color.Black;
-					txtSelectedDir.Text = dialog.SelectedPath;
-				}
+				txtSelectedDir.Text = dialog.SelectedPath;
 			}
 		}
 
-		private void btnConvert_Click(object sender, EventArgs e)
+		private void BtnConvert_Click(object sender, EventArgs e)
 		{
 			var selectedDirectory = txtSelectedDir.Text;
 
@@ -106,7 +103,7 @@ namespace VotVImageConverter
 				// Initialize the status dictionary for this image
 				if (!imageStatus.ContainsKey(fileName))
 				{
-					imageStatus[fileName] = new Dictionary<string, bool>();
+					imageStatus[fileName] = [];
 				}
 				try
 				{
@@ -119,7 +116,7 @@ namespace VotVImageConverter
 					// Apply cropping based on the folder
 					using Bitmap croppedImage = cropFunc(image);
 
-					string targetFileName = extension == ".png" ? fileNamewithoutExtension + ".png" : fileNamewithoutExtension + extension.Substring(1) + ".png";
+					string targetFileName = extension == ".png" ? fileNamewithoutExtension + ".png" : string.Concat(fileNamewithoutExtension, extension.AsSpan(1), ".png");
 					foreach (string subfolder in subfolders)
 					{
 						// Construct the output file path
@@ -170,7 +167,7 @@ namespace VotVImageConverter
 			int cropX = (sourceWidth - cropWidth) / 2;
 			int cropY = (sourceHeight - cropHeight) / 2;
 
-			Bitmap croppedImage = new Bitmap(cropWidth, cropHeight);
+			Bitmap croppedImage = new(cropWidth, cropHeight);
 			using (Graphics g = Graphics.FromImage(croppedImage))
 			{
 				g.DrawImage(image, new Rectangle(0, 0, cropWidth, cropHeight), cropX, cropY, cropWidth, cropHeight, GraphicsUnit.Pixel);
@@ -185,7 +182,7 @@ namespace VotVImageConverter
 			int sourceHeight = image.Height;
 			int targetSize = Math.Max(sourceWidth, sourceHeight);
 
-			Bitmap paddedImage = new Bitmap(targetSize, targetSize);
+			Bitmap paddedImage = new(targetSize, targetSize);
 			using (Graphics g = Graphics.FromImage(paddedImage))
 			{
 				g.Clear(Color.Transparent);
@@ -195,16 +192,16 @@ namespace VotVImageConverter
 			return paddedImage;
 		}
 
-		private void GenerateFailureReport(string outputDirectory, string[] subfolders, Dictionary<string, Dictionary<string, bool>> imageStatus)
+		private static void GenerateFailureReport(string outputDirectory, string[] subfolders, Dictionary<string, Dictionary<string, bool>> imageStatus)
 		{
-			if (imageStatus.Count is 0)
+			if (imageStatus.Count is 0 || imageStatus.Values.All(status => status.Values.All(v => v)))
 				return;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			// Find the longest filename for dynamic padding
 			int longestFilenameLength = imageStatus.Keys.Max(name => name.Length);
-			int paddingLength = longestFilenameLength + 5; // Add extra padding for spacing
+			int paddingLength = longestFilenameLength + 5;
 
 			// Add headers
 			sb.Append("Image Name".PadRight(paddingLength));
@@ -222,9 +219,7 @@ namespace VotVImageConverter
 					image.Value.TryGetValue(subfolder, out bool passed) && passed);
 
 				if (allPassed)
-				{
 					continue;
-				}
 
 				sb.Append(image.Key.PadRight(paddingLength)); // Image name
 

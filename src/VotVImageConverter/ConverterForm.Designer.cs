@@ -42,7 +42,7 @@
 			btnSelectDir.TabIndex = 0;
 			btnSelectDir.Text = "Browse";
 			btnSelectDir.UseVisualStyleBackColor = true;
-			btnSelectDir.Click += btnSelectDir_Click;
+			btnSelectDir.Click += BtnSelectDir_Click;
 			// 
 			// btnConvert
 			// 
@@ -52,16 +52,16 @@
 			btnConvert.TabIndex = 1;
 			btnConvert.Text = "Convert";
 			btnConvert.UseVisualStyleBackColor = true;
-			btnConvert.Click += this.btnConvert_Click;
+			btnConvert.Click += BtnConvert_Click;
 			// 
-			// textSelectDir
+			// txtSelectedDir
 			// 
-			txtSelectedDir.ForeColor = Color.DimGray;
+			txtSelectedDir.ForeColor = Color.Black;
 			txtSelectedDir.Location = new Point(12, 12);
-			txtSelectedDir.Name = "textSelectDir";
+			txtSelectedDir.Name = "txtSelectedDir";
+			txtSelectedDir.PlaceholderText = "Select a directory to convert images from.";
 			txtSelectedDir.Size = new Size(379, 23);
 			txtSelectedDir.TabIndex = 2;
-			txtSelectedDir.Text = "Select a directory to convert images from.";
 			// 
 			// labelInfo
 			// 
@@ -82,7 +82,7 @@
 			Controls.Add(btnConvert);
 			Controls.Add(btnSelectDir);
 			Name = "ConverterForm";
-			Text = "Form1";
+			Text = "VotV Image Converter";
 			ResumeLayout(false);
 			PerformLayout();
 		}
