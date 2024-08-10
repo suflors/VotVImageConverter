@@ -92,7 +92,6 @@
 		private Button btnSelectDir;
 		private Button btnConvert;
 		private TextBox txtSelectedDir;
-		private Label label1;
 		private Label labelInfo;
 	}
 }
